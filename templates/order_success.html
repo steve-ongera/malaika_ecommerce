@@ -1,80 +1,389 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Order Confirmation - Malaika Shop{% endblock %}
 
+{% block extra_css %}
+<style>
+    .success-container {
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 20px;
+    }
+
+    .success-card {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: scaleIn 0.5s ease-out;
+    }
+
+    .success-icon i {
+        font-size: 40px;
+        color: white;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .success-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #282828;
+        margin-bottom: 15px;
+    }
+
+    .success-message {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .order-info {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 25px;
+        margin: 30px 0;
+        text-align: left;
+    }
+
+    .order-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .order-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .order-info-label {
+        font-weight: 600;
+        color: #282828;
+    }
+
+    .order-info-value {
+        color: #666;
+    }
+
+    .order-id {
+        font-size: 24px;
+        font-weight: 700;
+        color: #0066cc;
+    }
+
+    .payment-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .payment-badge.paypal {
+        background: #e6f2ff;
+        color: #0070ba;
+    }
+
+    .payment-badge.mpesa {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .payment-badge.card {
+        background: #f3e5f5;
+        color: #6a1b9a;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .status-badge.paid {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-badge.pending {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .order-items {
+        margin: 30px 0;
+        text-align: left;
+    }
+
+    .order-items-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #282828;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .item-image {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        background: white;
+        border-radius: 6px;
+        padding: 5px;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-name {
+        font-weight: 600;
+        color: #282828;
+        margin-bottom: 5px;
+    }
+
+    .item-quantity {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .item-price {
+        font-weight: 700;
+        color: #282828;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 14px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: #0066cc;
+        color: white;
+        border: 2px solid #0066cc;
+    }
+
+    .btn-primary:hover {
+        background: #0052a3;
+        border-color: #0052a3;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #0066cc;
+        border: 2px solid #0066cc;
+    }
+
+    .btn-secondary:hover {
+        background: #f0f7ff;
+    }
+
+    .help-text {
+        margin-top: 30px;
+        padding: 20px;
+        background: #e3f2fd;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #1976d2;
+        text-align: left;
+    }
+
+    .help-text strong {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .success-container {
+            margin: 20px auto;
+        }
+
+        .success-card {
+            padding: 30px 20px;
+        }
+
+        .success-title {
+            font-size: 24px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <div class="text-center py-5">
-        <i class="bi bi-check-circle-fill display-1 text-success"></i>
-        <h1 class="mt-4">Thank You for Your Order!</h1>
-        <p class="lead">Your order has been successfully placed.</p>
-    </div>
+<div class="success-container">
+    <div class="success-card">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <i class="bi bi-check-lg"></i>
+        </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Order Details - #{{ order.id }}</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h6>Billing Information</h6>
-                            <p>
-                                {{ order.first_name }} {{ order.last_name }}<br>
-                                {{ order.email }}<br>
-                                {{ order.address }}<br>
-                                {{ order.city }}, {{ order.postal_code }}
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6>Order Information</h6>
-                            <p>
-                                Order Date: {{ order.created_at|date:"F d, Y" }}<br>
-                                Status: <span class="badge bg-success">{{ order.get_status_display }}</span><br>
-                                PayPal Order ID: {{ order.paypal_order_id }}
-                            </p>
-                        </div>
-                    </div>
+        <!-- Success Title -->
+        <h1 class="success-title">Order Confirmed!</h1>
+        <p class="success-message">
+            Thank you for your purchase. Your order has been successfully placed and is being processed.
+            {% if order.status == 'paid' %}
+            Payment has been received.
+            {% endif %}
+        </p>
 
-                    <h6>Order Items</h6>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in order.items.all %}
-                                <tr>
-                                    <td>{{ item.product.name }}</td>
-                                    <td>${{ item.price }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>${{ item.get_subtotal }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3" class="text-end">Total:</th>
-                                    <th>${{ order.total_amount }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
+        <!-- Order Information -->
+        <div class="order-info">
+            <div class="order-info-row">
+                <span class="order-info-label">Order Number:</span>
+                <span class="order-id">#{{ order.id }}</span>
             </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Order Date:</span>
+                <span class="order-info-value">{{ order.created_at|date:"F d, Y" }}</span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Payment Method:</span>
+                <span class="payment-badge {{ order.payment_method }}">
+                    {% if order.payment_method == 'paypal' %}
+                        <i class="bi bi-paypal"></i> PayPal
+                    {% elif order.payment_method == 'mpesa' %}
+                        <i class="bi bi-phone"></i> M-Pesa
+                    {% elif order.payment_method == 'card' %}
+                        <i class="bi bi-credit-card"></i> Card
+                    {% endif %}
+                </span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Payment Status:</span>
+                <span class="status-badge {{ order.status }}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+            <div class="order-info-row">
+                <span class="order-info-label">Total Amount:</span>
+                <span class="order-info-value" style="font-weight: 700; font-size: 18px; color: #0066cc;">
+                    {% if order.currency == 'KES' %}KES{% else %}${% endif %} {{ order.total_amount }}
+                </span>
+            </div>
+        </div>
 
-            <div class="text-center mt-4">
-                <a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'order_history' %}" class="btn btn-outline-primary">View Order History</a>
+        <!-- Order Items -->
+        <div class="order-items">
+            <div class="order-items-title">
+                <i class="bi bi-bag-check"></i> Order Items
+            </div>
+            {% for item in order.items.all %}
+            <div class="order-item">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="item-image">
+                {% else %}
+                <div class="item-image" style="display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-image" style="font-size: 24px; color: #ccc;"></i>
+                </div>
                 {% endif %}
+
+                <div class="item-details">
+                    <div class="item-name">{{ item.product.name }}</div>
+                    <div class="item-quantity">Quantity: {{ item.quantity }}</div>
+                </div>
+
+                <div class="item-price">
+                    ${{ item.get_subtotal }}
+                </div>
             </div>
+            {% endfor %}
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="order-info">
+            <div class="order-info-row">
+                <span class="order-info-label">
+                    <i class="bi bi-geo-alt"></i> Shipping Address:
+                </span>
+            </div>
+            <div class="order-info-row" style="border: none; padding-top: 0;">
+                <span class="order-info-value" style="width: 100%;">
+                    {{ order.first_name }} {{ order.last_name }}<br>
+                    {{ order.address }}<br>
+                    {{ order.city }}, {{ order.postal_code }}<br>
+                    {{ order.country }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'home' %}" class="btn btn-primary">
+                <i class="bi bi-house"></i> Continue Shopping
+            </a>
+            <a href="#" onclick="window.print(); return false;" class="btn btn-secondary">
+                <i class="bi bi-printer"></i> Print Receipt
+            </a>
+        </div>
+
+        <!-- Help Text -->
+        <div class="help-text">
+            <strong><i class="bi bi-info-circle"></i> What's Next?</strong>
+            <ul style="margin: 10px 0 0 20px; padding: 0;">
+                <li>You will receive an email confirmation shortly at {{ order.email }}</li>
+                <li>We'll send you tracking information once your order ships</li>
+                <li>Questions? Contact us at support@malaikashop.com</li>
+            </ul>
         </div>
     </div>
 </div>

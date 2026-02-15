@@ -1,5 +1,5 @@
 import os
-
+from decouple import config
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -131,3 +131,36 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+# PayPal Configuration
+PAYPAL_MODE = os.environ.get('PAYPAL_MODE', 'sandbox')
+PAYPAL_CLIENT_ID_SANDBOX = 'your_sandbox_client_id'
+PAYPAL_CLIENT_SECRET_SANDBOX = 'your_sandbox_secret'
+PAYPAL_CLIENT_ID_LIVE = os.environ.get('PAYPAL_CLIENT_ID_LIVE', '')
+PAYPAL_CLIENT_SECRET_LIVE = os.environ.get('PAYPAL_CLIENT_SECRET_LIVE', '')
+
+PAYPAL_CLIENT_ID = PAYPAL_CLIENT_ID_SANDBOX if PAYPAL_MODE == 'sandbox' else PAYPAL_CLIENT_ID_LIVE
+PAYPAL_CLIENT_SECRET = PAYPAL_CLIENT_SECRET_SANDBOX if PAYPAL_MODE == 'sandbox' else PAYPAL_CLIENT_SECRET_LIVE
+PAYPAL_API_URL = 'https://api-m.sandbox.paypal.com' if PAYPAL_MODE == 'sandbox' else 'https://api-m.paypal.com'
+
+SITE_URL = 'http://localhost:8000'  # Update for production
+ENABLE_PAYPAL = True
+
+
+# M-Pesa Configuration
+MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT', 'sandbox')
+MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY', '')
+MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET', '')
+MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE', '174379')
+MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY', '')
+MPESA_CALLBACK_URL = os.environ.get('MPESA_CALLBACK_URL', 'https://yourdomain.com/mpesa/callback/')
+
+MPESA_API_URL = 'https://sandbox.safaricom.co.ke' if MPESA_ENVIRONMENT == 'sandbox' else 'https://api.safaricom.co.ke'
+MPESA_CURRENCY = 'KES'
+ENABLE_MPESA = True
+
+# Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+ENABLE_CARD_PAYMENT = True
