@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Malaika Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <h4>Categories</h4>
+            <div class="list-group">
+                <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action">
+                    All Products
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'category_detail' category.slug %}" class="list-group-item list-group-item-action">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-md-9">
+            <h2 class="mb-4">All Products</h2>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="bi bi-image display-4 text-muted"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <span class="badge bg-secondary mb-2">{{ product.category.name }}</span>
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted">{{ product.description|truncatewords:15 }}</p>
+                            <p class="card-text fw-bold text-primary">${{ product.price }}</p>
+                            {% if product.stock > 0 %}
+                            <p class="card-text"><small class="text-success">In Stock ({{ product.stock }})</small></p>
+                            {% else %}
+                            <p class="card-text"><small class="text-danger">Out of Stock</small></p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-white">
+                            <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            {% if product.stock > 0 %}
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i> Add to Cart
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        No products found.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
