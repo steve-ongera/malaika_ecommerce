@@ -1,87 +1,595 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ product.name }} - Malaika Shop{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Product Detail Page Styles */
+    .product-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .breadcrumb-nav {
+        background-color: transparent;
+        padding: 15px 0;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb-list {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .breadcrumb-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .breadcrumb-list li:not(:last-child)::after {
+        content: '›';
+        color: #999;
+    }
+
+    .breadcrumb-list a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    .breadcrumb-list a:hover {
+        text-decoration: underline;
+    }
+
+    .breadcrumb-list .active {
+        color: #666;
+    }
+
+    /* Main Product Section */
+    .product-main {
+        background-color: white;
+        border-radius: 8px;
+        padding: 30px;
+        border: 1px solid #e0e0e0;
+        display: flex;
+        gap: 40px;
+        margin-bottom: 30px;
+    }
+
+    .product-gallery {
+        flex: 0 0 500px;
+    }
+
+    .main-image-container {
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        height: 500px;
+    }
+
+    .main-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .product-info-section {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .product-category-tag {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #e8f2ff;
+        color: #0066cc;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-decoration: none;
+    }
+
+    .product-category-tag:hover {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    .product-title {
+        font-size: 28px;
+        font-weight: 600;
+        color: #282828;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+
+    .product-rating-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #ff9900;
+        font-size: 18px;
+    }
+
+    .rating-text {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .product-sku {
+        font-size: 13px;
+        color: #999;
+    }
+
+    .product-price-section {
+        margin-bottom: 25px;
+    }
+
+    .current-price {
+        font-size: 36px;
+        font-weight: 700;
+        color: #282828;
+        margin-bottom: 10px;
+    }
+
+    .price-savings {
+        font-size: 14px;
+        color: #2ecc71;
+        font-weight: 600;
+    }
+
+    .stock-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 25px;
+    }
+
+    .stock-status.in-stock {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .stock-status.out-of-stock {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 30px;
+    }
+
+    .add-to-cart-btn-large {
+        flex: 1;
+        padding: 16px 24px;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .add-to-cart-btn-large:hover {
+        background-color: #0052a3;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    }
+
+    .add-to-cart-btn-large:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .wishlist-btn {
+        width: 56px;
+        height: 56px;
+        background-color: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #666;
+        transition: all 0.2s ease;
+    }
+
+    .wishlist-btn:hover {
+        border-color: #e74c3c;
+        color: #e74c3c;
+        background-color: #ffebee;
+    }
+
+    .product-features {
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .feature-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .feature-icon {
+        color: #2ecc71;
+        font-size: 20px;
+    }
+
+    .product-description-section {
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid #e0e0e0;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #282828;
+        margin-bottom: 15px;
+    }
+
+    .product-description {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #666;
+    }
+
+    /* Related Products Section */
+    .related-section {
+        margin-top: 50px;
+    }
+
+    .related-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+
+    .related-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #282828;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .related-product-card {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        transition: all 0.2s ease;
+    }
+
+    .related-product-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .related-image-container {
+        padding-top: 100%;
+        position: relative;
+        background-color: #f5f5f5;
+    }
+
+    .related-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        padding: 15px;
+    }
+
+    .related-info {
+        padding: 15px;
+    }
+
+    .related-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: #282828;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .related-price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0066cc;
+        margin-bottom: 10px;
+    }
+
+    .related-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #e8f2ff;
+        color: #0066cc;
+        border: none;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+    }
+
+    .related-btn:hover {
+        background-color: #0066cc;
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .product-main {
+            flex-direction: column;
+        }
+
+        .product-gallery {
+            flex: 1;
+        }
+
+        .main-image-container {
+            height: 400px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-detail-container {
+            padding: 15px;
+        }
+
+        .product-main {
+            padding: 20px;
+        }
+
+        .product-title {
+            font-size: 22px;
+        }
+
+        .current-price {
+            font-size: 28px;
+        }
+
+        .main-image-container {
+            height: 300px;
+            padding: 20px;
+        }
+
+        .product-actions {
+            flex-direction: column;
+        }
+
+        .wishlist-btn {
+            width: 100%;
+        }
+
+        .related-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'category_detail' product.category.slug %}">{{ product.category.name }}</a></li>
-            <li class="breadcrumb-item active">{{ product.name }}</li>
-        </ol>
+<div class="product-detail-container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <ul class="breadcrumb-list">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'product_list' %}">Products</a></li>
+            <li><a href="{% url 'category_detail' product.category.slug %}">{{ product.category.name }}</a></li>
+            <li class="active">{{ product.name }}</li>
+        </ul>
     </nav>
 
-    <div class="row">
-        <div class="col-md-6">
-            {% if product.image %}
-            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
-            {% else %}
-            <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
-                <i class="bi bi-image display-1 text-muted"></i>
+    <!-- Main Product Section -->
+    <div class="product-main">
+        <!-- Product Gallery -->
+        <div class="product-gallery">
+            <div class="main-image-container">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
+                {% else %}
+                <div style="text-align: center; color: #999;">
+                    <i class="bi bi-image" style="font-size: 80px;"></i>
+                    <p style="margin-top: 15px; font-size: 14px;">No Image Available</p>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
-        <div class="col-md-6">
-            <h1>{{ product.name }}</h1>
-            <p class="text-muted">
-                <a href="{% url 'category_detail' product.category.slug %}" class="text-decoration-none">
-                    {{ product.category.name }}
-                </a>
-            </p>
-            <h2 class="text-primary">${{ product.price }}</h2>
-            
+
+        <!-- Product Info -->
+        <div class="product-info-section">
+            <a href="{% url 'category_detail' product.category.slug %}" class="product-category-tag">
+                <i class="bi bi-tag"></i> {{ product.category.name }}
+            </a>
+
+            <h1 class="product-title">{{ product.name }}</h1>
+
+            <div class="product-rating-section">
+                <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                </div>
+                <span class="rating-text">4.5 out of 5</span>
+                <span class="rating-text">|</span>
+                <span class="rating-text">128 ratings</span>
+            </div>
+
+            <div class="product-price-section">
+                <div class="current-price">${{ product.price }}</div>
+                {% if product.stock > 0 %}
+                <div class="price-savings">
+                    <i class="bi bi-tag"></i> Save up to 20% on bulk orders
+                </div>
+                {% endif %}
+            </div>
+
             {% if product.stock > 0 %}
-            <p class="text-success"><i class="bi bi-check-circle"></i> In Stock ({{ product.stock }} available)</p>
-            {% else %}
-            <p class="text-danger"><i class="bi bi-x-circle"></i> Out of Stock</p>
-            {% endif %}
-
-            <hr>
-
-            <h5>Description</h5>
-            <p>{{ product.description }}</p>
-
-            <hr>
-
-            {% if product.stock > 0 %}
-            <div class="d-grid gap-2">
-                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg">
-                    <i class="bi bi-cart-plus"></i> Add to Cart
-                </a>
+            <div class="stock-status in-stock">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>In Stock - {{ product.stock }} unit{{ product.stock|pluralize }} available</span>
             </div>
             {% else %}
-            <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
+            <div class="stock-status out-of-stock">
+                <i class="bi bi-x-circle-fill"></i>
+                <span>Out of Stock</span>
+            </div>
             {% endif %}
 
-            <div class="mt-3">
-                <small class="text-muted">SKU: {{ product.id }}</small>
+            <div class="product-actions">
+                {% if product.stock > 0 %}
+                <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn-large">
+                    <i class="bi bi-cart-plus"></i>
+                    <span>Add to Cart</span>
+                </a>
+                {% else %}
+                <button class="add-to-cart-btn-large" disabled>
+                    <i class="bi bi-x-circle"></i>
+                    <span>Out of Stock</span>
+                </button>
+                {% endif %}
+                
+                <button class="wishlist-btn" title="Add to Wishlist">
+                    <i class="bi bi-heart"></i>
+                </button>
+            </div>
+
+            <div class="product-features">
+                <div class="feature-item">
+                    <i class="bi bi-truck feature-icon"></i>
+                    <span>Free delivery on orders over $50</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-arrow-repeat feature-icon"></i>
+                    <span>30-day easy return policy</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-shield-check feature-icon"></i>
+                    <span>1-year warranty included</span>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-credit-card feature-icon"></i>
+                    <span>Secure payment via PayPal</span>
+                </div>
+            </div>
+
+            <div class="product-description-section">
+                <h2 class="section-title">Product Description</h2>
+                <div class="product-description">
+                    {{ product.description }}
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p class="product-sku">
+                    <strong>SKU:</strong> {{ product.id|stringformat:"05d" }} | 
+                    <strong>Added:</strong> {{ product.created_at|date:"M d, Y" }}
+                </p>
             </div>
         </div>
     </div>
 
     <!-- Related Products -->
     {% if related_products %}
-    <div class="mt-5">
-        <h3>Related Products</h3>
-        <hr>
-        <div class="row">
+    <div class="related-section">
+        <div class="related-header">
+            <h2 class="related-title">
+                <i class="bi bi-grid"></i> Related Products
+            </h2>
+            <a href="{% url 'category_detail' product.category.slug %}" style="color: #0066cc; font-size: 14px; text-decoration: none; font-weight: 600;">
+                View All <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="related-grid">
             {% for related in related_products %}
-            <div class="col-md-3 mb-3">
-                <div class="card h-100">
-                    {% if related.image %}
-                    <img src="{{ related.image.url }}" class="card-img-top" alt="{{ related.name }}">
-                    {% else %}
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
-                        <i class="bi bi-image display-6 text-muted"></i>
+            <div class="related-product-card">
+                <a href="{% url 'product_detail' related.slug %}" style="text-decoration: none;">
+                    <div class="related-image-container">
+                        {% if related.image %}
+                        <img src="{{ related.image.url }}" alt="{{ related.name }}" class="related-image">
+                        {% else %}
+                        <div class="related-image" style="display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-image" style="font-size: 40px; color: #ccc;"></i>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h6 class="card-title">{{ related.name }}</h6>
-                        <p class="card-text fw-bold">${{ related.price }}</p>
-                        <a href="{% url 'product_detail' related.slug %}" class="btn btn-outline-primary btn-sm">View</a>
-                    </div>
+                </a>
+
+                <div class="related-info">
+                    <a href="{% url 'product_detail' related.slug %}" style="text-decoration: none; color: inherit;">
+                        <h3 class="related-name">{{ related.name }}</h3>
+                    </a>
+                    <div class="related-price">${{ related.price }}</div>
+                    <a href="{% url 'product_detail' related.slug %}" class="related-btn">
+                        View Details
+                    </a>
                 </div>
             </div>
             {% endfor %}
