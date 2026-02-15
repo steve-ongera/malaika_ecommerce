@@ -15,7 +15,7 @@ def home(request):
         'products': products,
         'categories': categories,
     }
-    return render(request, 'ecommerce/home.html', context)
+    return render(request, 'home.html', context)
 
 
 def product_list(request):
@@ -32,7 +32,7 @@ def product_list(request):
         'products': products,
         'categories': categories,
     }
-    return render(request, 'ecommerce/product_list.html', context)
+    return render(request, 'product_list.html', context)
 
 
 def product_detail(request, slug):
@@ -47,7 +47,7 @@ def product_detail(request, slug):
         'product': product,
         'related_products': related_products,
     }
-    return render(request, 'ecommerce/product_detail.html', context)
+    return render(request, 'product_detail.html', context)
 
 
 def category_detail(request, slug):
@@ -59,7 +59,7 @@ def category_detail(request, slug):
         'category': category,
         'products': products,
     }
-    return render(request, 'ecommerce/category_detail.html', context)
+    return render(request, 'category_detail.html', context)
 
 
 def get_or_create_cart(request):
@@ -82,7 +82,7 @@ def cart_view(request):
         'cart': cart,
         'cart_items': cart.items.all(),
     }
-    return render(request, 'ecommerce/cart.html', context)
+    return render(request, 'cart.html', context)
 
 
 def add_to_cart(request, product_id):
@@ -141,7 +141,7 @@ def checkout(request):
         'cart': cart,
         'cart_items': cart_items,
     }
-    return render(request, 'ecommerce/checkout.html', context)
+    return render(request, 'checkout.html', context)
 
 
 @csrf_exempt
@@ -199,7 +199,7 @@ def order_success(request, order_id):
     context = {
         'order': order,
     }
-    return render(request, 'ecommerce/order_success.html', context)
+    return render(request, 'order_success.html', context)
 
 
 @login_required
@@ -209,7 +209,7 @@ def order_history(request):
     context = {
         'orders': orders,
     }
-    return render(request, 'ecommerce/order_history.html', context)
+    return render(request, 'order_history.html', context)
 
 
 @login_required
@@ -219,4 +219,4 @@ def order_detail(request, order_id):
     context = {
         'order': order,
     }
-    return render(request, 'ecommerce/order_detail.html', context)
+    return render(request, 'order_detail.html', context)
