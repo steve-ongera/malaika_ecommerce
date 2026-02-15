@@ -144,48 +144,85 @@
         gap: 15px;
     }
 
-    /* Payment Section */
-    .payment-method {
+    /* Payment Method Selection */
+    .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .payment-method-option {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .payment-method-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .payment-method-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .payment-method-option input[type="radio"]:checked + .payment-method-card {
+        border-color: #0066cc;
+        background-color: #f0f7ff;
+    }
+
+    .payment-method-icon {
+        font-size: 36px;
+        margin-bottom: 10px;
+        color: #0066cc;
+    }
+
+    .payment-method-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #282828;
+    }
+
+    /* Payment Forms */
+    .payment-form {
+        display: none;
         background-color: #f9f9f9;
         border-radius: 6px;
         padding: 20px;
         margin-top: 15px;
     }
 
-    .payment-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 15px;
-        background-color: white;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        border: 1px solid #e0e0e0;
+    .payment-form.active {
+        display: block;
     }
 
-    .payment-icon {
-        font-size: 32px;
-        color: #0066cc;
-    }
-
-    .payment-text {
-        flex: 1;
-    }
-
-    .payment-title {
-        font-size: 14px;
-        font-weight: 600;
-        color: #282828;
-        margin-bottom: 4px;
-    }
-
-    .payment-subtitle {
-        font-size: 12px;
-        color: #666;
-    }
-
-    #paypal-button-container {
+    #paypal-button-container,
+    #card-element {
         min-height: 50px;
+    }
+
+    .mpesa-info {
+        background: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+    .mpesa-steps {
+        font-size: 13px;
+        color: #2e7d32;
+        line-height: 1.8;
+    }
+
+    .mpesa-steps ol {
+        margin: 10px 0;
+        padding-left: 20px;
     }
 
     /* Order Summary Section */
@@ -326,6 +363,52 @@
         font-size: 16px;
     }
 
+    .btn-primary {
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0052a3;
+    }
+
+    .btn-primary:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+    .alert-info {
+        background-color: #e3f2fd;
+        color: #1976d2;
+        border-left: 4px solid #1976d2;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 4px solid #4caf50;
+    }
+
+    .alert-error {
+        background-color: #ffebee;
+        color: #c62828;
+        border-left: 4px solid #f44336;
+    }
+
     /* Responsive Design */
     @media (max-width: 992px) {
         .checkout-content {
@@ -343,6 +426,10 @@
         .checkout-steps {
             flex-direction: column;
             align-items: center;
+        }
+
+        .payment-methods {
+            grid-template-columns: 1fr;
         }
     }
 
@@ -367,6 +454,22 @@
             display: none;
         }
     }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .spinner-icon {
+        font-size: 32px;
+        color: #0066cc;
+        animation: spin 1s linear infinite;
+    }
 </style>
 {% endblock %}
 
@@ -377,7 +480,7 @@
         <h1 class="checkout-title">
             <i class="bi bi-credit-card"></i> Secure Checkout
         </h1>
-        <p class="checkout-subtitle">Complete your order securely with PayPal</p>
+        <p class="checkout-subtitle">Complete your order securely</p>
         
         <div class="checkout-steps">
             <div class="step">
@@ -429,6 +532,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="phone" class="form-label">
+                            Phone Number <span class="required">*</span>
+                        </label>
+                        <input type="tel" class="form-input" id="phone" placeholder="+254712345678" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="address" class="form-label">
                             Street Address <span class="required">*</span>
                         </label>
@@ -440,13 +550,13 @@
                             <label for="city" class="form-label">
                                 City <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-input" id="city" placeholder="New York" required>
+                            <input type="text" class="form-input" id="city" placeholder="Nairobi" required>
                         </div>
                         <div class="form-group">
                             <label for="postal_code" class="form-label">
                                 Postal Code <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-input" id="postal_code" placeholder="10001" required>
+                            <input type="text" class="form-input" id="postal_code" placeholder="00100" required>
                         </div>
                     </div>
                 </form>
@@ -459,18 +569,85 @@
                     <h2 class="form-card-title">Payment Method</h2>
                 </div>
 
-                <div class="payment-info">
-                    <i class="bi bi-paypal payment-icon"></i>
-                    <div class="payment-text">
-                        <div class="payment-title">Pay with PayPal</div>
-                        <div class="payment-subtitle">Fast, secure, and easy payment</div>
-                    </div>
-                    <i class="bi bi-shield-check" style="font-size: 24px; color: #2ecc71;"></i>
+                <!-- Payment Method Selection -->
+                <div class="payment-methods">
+                    {% if enable_paypal %}
+                    <label class="payment-method-option">
+                        <input type="radio" name="payment_method" value="paypal" checked>
+                        <div class="payment-method-card">
+                            <i class="bi bi-paypal payment-method-icon"></i>
+                            <div class="payment-method-name">PayPal</div>
+                        </div>
+                    </label>
+                    {% endif %}
+
+                    {% if enable_mpesa %}
+                    <label class="payment-method-option">
+                        <input type="radio" name="payment_method" value="mpesa">
+                        <div class="payment-method-card">
+                            <i class="bi bi-phone payment-method-icon"></i>
+                            <div class="payment-method-name">M-Pesa</div>
+                        </div>
+                    </label>
+                    {% endif %}
+
+                    {% if enable_card %}
+                    <label class="payment-method-option">
+                        <input type="radio" name="payment_method" value="card">
+                        <div class="payment-method-card">
+                            <i class="bi bi-credit-card payment-method-icon"></i>
+                            <div class="payment-method-name">Card</div>
+                        </div>
+                    </label>
+                    {% endif %}
                 </div>
 
-                <div class="payment-method">
+                <!-- PayPal Payment Form -->
+                {% if enable_paypal %}
+                <div id="paypal-payment-form" class="payment-form active">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        You will be redirected to PayPal to complete your payment securely.
+                    </div>
                     <div id="paypal-button-container"></div>
                 </div>
+                {% endif %}
+
+                <!-- M-Pesa Payment Form -->
+                {% if enable_mpesa %}
+                <div id="mpesa-payment-form" class="payment-form">
+                    <div class="mpesa-info">
+                        <div class="mpesa-steps">
+                            <strong>How to pay with M-Pesa:</strong>
+                            <ol>
+                                <li>Click "Pay with M-Pesa" button</li>
+                                <li>Enter your M-Pesa PIN on your phone</li>
+                                <li>Confirm the payment</li>
+                                <li>Wait for confirmation</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <button type="button" id="mpesa-button" class="btn-primary">
+                        <i class="bi bi-phone"></i> Pay with M-Pesa
+                    </button>
+                    <div id="mpesa-status" style="margin-top: 15px;"></div>
+                </div>
+                {% endif %}
+
+                <!-- Card Payment Form -->
+                {% if enable_card %}
+                <div id="card-payment-form" class="payment-form">
+                    <div class="alert alert-info">
+                        <i class="bi bi-shield-check"></i>
+                        Your card information is encrypted and secure.
+                    </div>
+                    <div id="card-element"></div>
+                    <button type="button" id="card-button" class="btn-primary" style="margin-top: 15px;">
+                        <i class="bi bi-credit-card"></i> Pay Now
+                    </button>
+                    <div id="card-errors" style="margin-top: 10px; color: #c62828;"></div>
+                </div>
+                {% endif %}
             </div>
         </div>
 
@@ -508,7 +685,7 @@
                 <div class="summary-totals">
                     <div class="summary-row">
                         <span>Subtotal ({{ cart_items.count }} item{{ cart_items.count|pluralize }})</span>
-                        <span class="amount">${{ cart.get_total }}</span>
+                        <span class="amount">${{ subtotal }}</span>
                     </div>
 
                     <div class="summary-row">
@@ -518,12 +695,12 @@
 
                     <div class="summary-row">
                         <span>Tax</span>
-                        <span class="amount">$0.00</span>
+                        <span class="amount">${{ tax }}</span>
                     </div>
 
                     <div class="summary-row total">
                         <span>Total</span>
-                        <span class="amount">${{ cart.get_total }}</span>
+                        <span class="amount" id="total-amount">${{ total }}</span>
                     </div>
                 </div>
 
@@ -550,48 +727,99 @@
 
 {% block extra_js %}
 <!-- PayPal SDK -->
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+{% if enable_paypal %}
+<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
+{% endif %}
+
+<!-- Stripe SDK -->
+{% if enable_card and stripe_publishable_key %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endif %}
 
 <script>
+    const TOTAL_AMOUNT = '{{ total }}';
+    const CART_TOTAL = parseFloat(TOTAL_AMOUNT);
+    
+    // Payment method switching
+    const paymentMethodOptions = document.querySelectorAll('input[name="payment_method"]');
+    const paymentForms = document.querySelectorAll('.payment-form');
+    
+    paymentMethodOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            paymentForms.forEach(form => form.classList.remove('active'));
+            const selectedForm = document.getElementById(this.value + '-payment-form');
+            if (selectedForm) {
+                selectedForm.classList.add('active');
+            }
+        });
+    });
+
+    // Validate form
+    function validateForm() {
+        const form = document.getElementById('checkout-form');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return false;
+        }
+        return true;
+    }
+
+    // Get form data
+    function getFormData() {
+        return {
+            first_name: document.getElementById('first_name').value,
+            last_name: document.getElementById('last_name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value,
+            city: document.getElementById('city').value,
+            postal_code: document.getElementById('postal_code').value,
+            country: 'KE'
+        };
+    }
+
+    // Show loading state
+    function showLoading(containerId, message = 'Processing...') {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `
+            <div class="loading-spinner">
+                <i class="bi bi-arrow-repeat spinner-icon"></i>
+                <p style="margin-top: 10px; color: #666;">${message}</p>
+            </div>
+        `;
+    }
+
+    {% if enable_paypal %}
+    // PayPal Integration
     paypal.Buttons({
         createOrder: function(data, actions) {
-            // Validate form
-            const form = document.getElementById('checkout-form');
-            if (!form.checkValidity()) {
-                form.reportValidity();
+            if (!validateForm()) {
                 return;
             }
 
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: '{{ cart.get_total }}'
+                        value: TOTAL_AMOUNT
                     }
                 }]
             });
         },
         onApprove: function(data, actions) {
             return actions.order.capture().then(function(details) {
-                // Get form data
-                const formData = {
-                    first_name: document.getElementById('first_name').value,
-                    last_name: document.getElementById('last_name').value,
-                    email: document.getElementById('email').value,
-                    address: document.getElementById('address').value,
-                    city: document.getElementById('city').value,
-                    postal_code: document.getElementById('postal_code').value,
-                    paypal_order_id: data.orderID
-                };
+                showLoading('paypal-button-container', 'Processing your order...');
 
-                // Show loading state
-                const container = document.getElementById('paypal-button-container');
-                container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="bi bi-arrow-repeat" style="font-size: 32px; color: #0066cc; animation: spin 1s linear infinite;"></i><p style="margin-top: 10px; color: #666;">Processing your order...</p></div>';
+                const formData = getFormData();
+                formData.paypal_order_id = data.orderID;
+                formData.payment_method = 'paypal';
+                formData.currency = 'USD';
+                formData.payment_details = details;
 
-                // Send order to server
                 fetch('{% url "create_order" %}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
                     },
                     body: JSON.stringify(formData)
                 })
@@ -616,12 +844,225 @@
             alert('Payment failed. Please try again.');
         }
     }).render('#paypal-button-container');
-</script>
+    {% endif %}
 
-<style>
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+    {% if enable_mpesa %}
+    // M-Pesa Integration
+    document.getElementById('mpesa-button').addEventListener('click', function() {
+        if (!validateForm()) {
+            return;
+        }
+
+        const formData = getFormData();
+        const phone = document.getElementById('phone').value;
+        
+        // Convert amount to KES (example rate, adjust as needed)
+        const amountKES = Math.round(CART_TOTAL * 130); // Rough USD to KES conversion
+        
+        this.disabled = true;
+        this.innerHTML = '<i class="bi bi-arrow-repeat spinner-icon"></i> Initiating payment...';
+
+        // First create the order
+        fetch('{% url "create_order" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                ...formData,
+                payment_method: 'mpesa',
+                currency: 'KES',
+                total_amount: amountKES
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const orderId = data.order_id;
+                
+                // Initiate M-Pesa payment
+                return fetch('{% url "initiate_mpesa_payment" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        phone_number: phone,
+                        amount: amountKES,
+                        order_id: orderId
+                    })
+                });
+            } else {
+                throw new Error('Failed to create order');
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('mpesa-status').innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i>
+                        ${data.message}. Please check your phone and enter your M-Pesa PIN.
+                    </div>
+                `;
+                
+                // Poll for payment status
+                const checkoutRequestId = data.checkout_request_id;
+                pollMpesaStatus(checkoutRequestId);
+            } else {
+                throw new Error(data.error || 'Payment initiation failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('mpesa-status').innerHTML = `
+                <div class="alert alert-error">
+                    <i class="bi bi-x-circle"></i>
+                    ${error.message}. Please try again.
+                </div>
+            `;
+            this.disabled = false;
+            this.innerHTML = '<i class="bi bi-phone"></i> Pay with M-Pesa';
+        });
+    });
+
+    function pollMpesaStatus(checkoutRequestId, attempts = 0) {
+        if (attempts >= 20) {
+            document.getElementById('mpesa-status').innerHTML = `
+                <div class="alert alert-error">
+                    <i class="bi bi-x-circle"></i>
+                    Payment timeout. Please check your M-Pesa messages or contact support.
+                </div>
+            `;
+            return;
+        }
+
+        setTimeout(() => {
+            fetch(`/query-mpesa-status/${checkoutRequestId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.status.ResultCode === '0') {
+                        // Payment successful
+                        window.location.href = '/order-success/' + data.order_id + '/';
+                    } else if (data.status.ResultCode) {
+                        // Payment failed
+                        document.getElementById('mpesa-status').innerHTML = `
+                            <div class="alert alert-error">
+                                <i class="bi bi-x-circle"></i>
+                                Payment failed. ${data.status.ResultDesc}
+                            </div>
+                        `;
+                    } else {
+                        // Still pending, continue polling
+                        pollMpesaStatus(checkoutRequestId, attempts + 1);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    pollMpesaStatus(checkoutRequestId, attempts + 1);
+                });
+        }, 3000); // Check every 3 seconds
     }
-</style>
+    {% endif %}
+
+    {% if enable_card and stripe_publishable_key %}
+    // Stripe Integration
+    const stripe = Stripe('{{ stripe_publishable_key }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#282828',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+            },
+        }
+    });
+    cardElement.mount('#card-element');
+
+    document.getElementById('card-button').addEventListener('click', async function() {
+        if (!validateForm()) {
+            return;
+        }
+
+        this.disabled = true;
+        this.innerHTML = '<i class="bi bi-arrow-repeat spinner-icon"></i> Processing...';
+
+        try {
+            // Create payment intent
+            const response = await fetch('{% url "create_stripe_payment_intent" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    amount: TOTAL_AMOUNT,
+                    currency: 'usd'
+                })
+            });
+
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.error);
+            }
+
+            // Confirm card payment
+            const result = await stripe.confirmCardPayment(data.client_secret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: document.getElementById('first_name').value + ' ' + document.getElementById('last_name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        address: {
+                            line1: document.getElementById('address').value,
+                            city: document.getElementById('city').value,
+                            postal_code: document.getElementById('postal_code').value
+                        }
+                    }
+                }
+            });
+
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+
+            // Create order
+            const formData = getFormData();
+            formData.payment_method = 'card';
+            formData.currency = 'USD';
+            formData.payment_intent_id = result.paymentIntent.id;
+
+            const orderResponse = await fetch('{% url "create_order" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const orderData = await orderResponse.json();
+
+            if (orderData.success) {
+                window.location.href = '/order-success/' + orderData.order_id + '/';
+            } else {
+                throw new Error('Failed to create order');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('card-errors').textContent = error.message;
+            this.disabled = false;
+            this.innerHTML = '<i class="bi bi-credit-card"></i> Pay Now';
+        }
+    });
+    {% endif %}
+</script>
 {% endblock %}
