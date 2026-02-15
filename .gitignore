@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment Variables
+.env
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Migrations (optional if you want to track them)
+# */migrations/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Node (if using React/Vue frontend)
+node_modules/
+dist/
+build/
+
+# Coverage
+.coverage
+htmlcov/
+
+# PostgreSQL dump files
+*.sql
+
+# Backup files
+*.bak

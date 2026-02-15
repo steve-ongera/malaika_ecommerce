@@ -1,0 +1,12 @@
+Django>=4.2,<5.0
+psycopg2-binary
+python-dotenv
+djangorestframework
+django-cors-headers
+Pillow
+gunicorn
+whitenoise
+requests
+django-filter
+cloudinary
+django-cloudinary-storage
