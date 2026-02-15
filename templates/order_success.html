@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmation - Malaika Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center py-5">
+        <i class="bi bi-check-circle-fill display-1 text-success"></i>
+        <h1 class="mt-4">Thank You for Your Order!</h1>
+        <p class="lead">Your order has been successfully placed.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Order Details - #{{ order.id }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Billing Information</h6>
+                            <p>
+                                {{ order.first_name }} {{ order.last_name }}<br>
+                                {{ order.email }}<br>
+                                {{ order.address }}<br>
+                                {{ order.city }}, {{ order.postal_code }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Order Information</h6>
+                            <p>
+                                Order Date: {{ order.created_at|date:"F d, Y" }}<br>
+                                Status: <span class="badge bg-success">{{ order.get_status_display }}</span><br>
+                                PayPal Order ID: {{ order.paypal_order_id }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <h6>Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>${{ item.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ item.get_subtotal }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th>${{ order.total_amount }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary">Continue Shopping</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'order_history' %}" class="btn btn-outline-primary">View Order History</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
