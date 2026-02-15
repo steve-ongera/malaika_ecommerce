@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Malaika Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+            <li class="breadcrumb-item active">{{ category.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="mb-4">
+        <h1>{{ category.name }}</h1>
+        {% if category.description %}
+        <p class="lead text-muted">{{ category.description }}</p>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-image display-4 text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.description|truncatewords:15 }}</p>
+                    <p class="card-text fw-bold text-primary">${{ product.price }}</p>
+                    {% if product.stock > 0 %}
+                    <p class="card-text"><small class="text-success">In Stock</small></p>
+                    {% else %}
+                    <p class="card-text"><small class="text-danger">Out of Stock</small></p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                    {% if product.stock > 0 %}
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-cart-plus"></i> Add to Cart
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No products in this category yet.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
