@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Malaika Shop{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Welcome to Malaika Shop</h1>
+                <p class="lead">Discover amazing products at great prices!</p>
+                <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">Shop Now</a>
+            </div>
+            <div class="col-lg-6">
+                <i class="bi bi-cart-check display-1 text-primary"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Section -->
+<div class="container my-5">
+    <h2 class="mb-4">Shop by Category</h2>
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'category_detail' category.slug %}" class="text-decoration-none">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="bi bi-tag display-4 text-primary"></i>
+                        <h5 class="card-title mt-3">{{ category.name }}</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="container my-5">
+    <h2 class="mb-4">Featured Products</h2>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-image display-4 text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.description|truncatewords:10 }}</p>
+                    <p class="card-text fw-bold">${{ product.price }}</p>
+                    <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-cart-plus"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">No products available at the moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
